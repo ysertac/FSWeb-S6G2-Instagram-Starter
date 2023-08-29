@@ -8,6 +8,9 @@ const Gonderiler = (props) => {
 
   return (
     <div className="posts-container-wrapper">
+      {gonderiler.map((item) => (
+        <Gonderi gonderi={item} key={item.id} gonderiyiBegen={gonderiyiBegen} />
+      ))}
       {/* gönderiler dizisini işleyip her döngüde bir Gönderi bileşeni çağırın*/}
       {/* Gönderi'nin çağırılmasında hangi propları kullanmanız gerektiğine dikkat edin! */}
     </div>

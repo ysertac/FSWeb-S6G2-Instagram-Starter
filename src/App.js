@@ -5,18 +5,47 @@
 */
 
 // State hook u import edin
-import React from "react";
+import React, { useState } from "react";
+import AramaCubugu from "./bilesenler/AramaCubugu/AramaCubugu";
+import Gonderiler from "./bilesenler/Gonderiler/Gonderiler";
+import sahteVeri from "./sahte-veri";
 
 // Gönderiler (çoğul!) ve AramaÇubuğu bileşenlerini import edin, çünkü bunlar App bileşeni içinde kullanılacak
 // sahteVeri'yi import edin
 import "./App.css";
 
 const App = () => {
+  const [posts, setPosts] = useState(sahteVeri);
+  const [search, setSearch] = useState("");
+  const [favs, setFavs] = useState([]);
   // Gönderi nesneleri dizisini tutmak için "gonderiler" adlı bir state oluşturun, **sahteVeri'yi yükleyin**.
   // Artık sahteVeri'ye ihtiyacınız olmayacak.
   // Arama çubuğunun çalışması için , arama kriterini tutacak başka bir state'e ihtiyacımız olacak.
+  const searchChangeHandler = (e) => {
+    const { value } = e.target;
+    setSearch(value);
+    const searchResult = sahteVeri.filter((item) => {
+      return item.username.includes(value);
+    });
+    setPosts(searchResult);
+  };
 
   const gonderiyiBegen = (gonderiID) => {
+    const guncelPosts = posts.map((item) => {
+      if (item.id == gonderiID) {
+        if (!favs.includes(gonderiID)) {
+          item.likes++;
+          setFavs([...favs, gonderiID]);
+        } else {
+          item.likes--;
+          favs.splice(favs.indexOf(gonderiID), 1);
+          setFavs([...favs]);
+        }
+      }
+      return item;
+    });
+
+    setPosts(guncelPosts);
     /*
       Bu fonksiyon, belirli bir id ile gönderinin beğeni sayısını bir artırma amacına hizmet eder.
 
@@ -32,10 +61,10 @@ const App = () => {
 
   return (
     <div className="App">
-      App Çalışıyor
-      {/* Yukarıdaki metni projeye başladığınızda silin*/}
       {/* AramaÇubuğu ve Gönderiler'i render etmesi için buraya ekleyin */}
       {/* Her bileşenin hangi proplara ihtiyaç duyduğunu kontrol edin, eğer ihtiyaç varsa ekleyin! */}
+      <AramaCubugu search={search} changeHandler={searchChangeHandler} />
+      <Gonderiler gonderiyiBegen={gonderiyiBegen} gonderiler={posts} />
     </div>
   );
 };
